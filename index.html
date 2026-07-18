@@ -129,9 +129,10 @@
 </main>
 
 <script>
+  const AUTH_ENABLED = false; // flip to true when ready to turn login back on
   const SUPABASE_URL = 'https://gbkgsrducevspsjzxmkv.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdia2dzcmR1Y2V2c3Bzanp4bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNjUxNjMsImV4cCI6MjA5OTk0MTE2M30.ugtO1CxT3ycbZJ-AhtWbARLZTT2g1-3wrcmFPuLHi0s';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = AUTH_ENABLED ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
   const LETTER_HTML = `
     <div class="letter">
@@ -148,7 +149,7 @@
       <p class="signoff-name">Kamalee &#10084;&#65039;</p>
     </div>
     <div class="cta-wrap">
-      <a class="cta" href="/auth">ready to see the paper hours →</a>
+      <a class="cta" href="${AUTH_ENABLED ? '/auth' : '/app'}">ready to see the paper hours →</a>
     </div>
   `;
 
@@ -168,6 +169,12 @@
 
   (async function(){
     const contentEl = document.getElementById('content');
+
+    if(!AUTH_ENABLED){
+      contentEl.innerHTML = LETTER_HTML;
+      return;
+    }
+
     const hasAccount = localStorage.getItem('ph_has_account') === '1';
     const lastActive = parseInt(localStorage.getItem('ph_last_active') || '0', 10);
     const daysSince = lastActive ? Math.floor((Date.now() - lastActive) / 86400000) : Infinity;

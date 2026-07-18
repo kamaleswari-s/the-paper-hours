@@ -1134,12 +1134,14 @@
     applyThemeIndex((state.themeIndex + 1) % THEME_LIST.length);
   });
 
+  const AUTH_ENABLED = false; // flip to true when ready to turn login back on
   const SUPABASE_URL = 'https://gbkgsrducevspsjzxmkv.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdia2dzcmR1Y2V2c3Bzanp4bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNjUxNjMsImV4cCI6MjA5OTk0MTE2M30.ugtO1CxT3ycbZJ-AhtWbARLZTT2g1-3wrcmFPuLHi0s';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = AUTH_ENABLED ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
   let currentUserEmail = null;
 
   async function checkSessionAndInit(){
+    if(!AUTH_ENABLED) return;
     let session = null;
     try{
       const { data } = await sb.auth.getSession();
@@ -1157,6 +1159,10 @@
   }
 
   mailBtn.addEventListener('click', ()=>{
+    if(!AUTH_ENABLED){
+      showToast('email sign-in is on the way. for now, everything stays saved in this browser.', 3600);
+      return;
+    }
     if(!currentUserEmail){ showToast('checking your session...', 1800); return; }
     const wantsOut = confirm('signed in as ' + currentUserEmail + '\n\nsign out?');
     if(wantsOut){
