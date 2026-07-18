@@ -13,6 +13,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='28' fill='%23FBFCFE' stroke='%231B2A3D' stroke-width='2'/%3E%3Cg transform='rotate(-8 30 30)'%3E%3Cline x1='16' y1='14' x2='44' y2='14' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cline x1='16' y1='46' x2='44' y2='46' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M18 14 L42 14 L30 30 Z' fill='%234A6FA5' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M18 46 L42 46 L30 30 Z' fill='%237C93AC' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M30 28.3 L31.1 30.4 L33.4 30.4 L31.6 31.9 L32.3 34.1 L30 32.7 L27.7 34.1 L28.4 31.9 L26.6 30.4 L28.9 30.4 Z' fill='%23FBFCFE' stroke='%232A241C' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Shadows+Into+Light&family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#E2E8F0; --ink:#1B2A3D; --ink-soft:rgba(27,42,61,0.65);
@@ -42,7 +43,7 @@
 
   @media (max-width: 640px){
     main{ padding:36px 18px 60px; }
-    .logo-wrap svg{ width:52px; height:52px; }
+    .brand-row svg{ width:52px; height:52px; }
     .wordmark{ font-size:21px; }
     .tagline{ font-size:14px; margin-bottom:28px; }
     .letter{ padding:26px 20px; }
@@ -52,12 +53,12 @@
     .cta{ padding:14px 20px; font-size:14px; width:100%; text-align:center; }
   }
 
-  .logo-wrap{ display:flex; justify-content:center; margin-bottom:18px; }
-  .logo-wrap svg{ width:64px; height:64px; }
+  .brand-row{ display:flex; flex-direction:column; align-items:center; margin-bottom:18px; }
+  .brand-row svg{ width:64px; height:64px; margin-bottom:14px; }
 
   .wordmark{
     font-family:'Playfair Display'; font-style:italic; font-weight:600; font-size:26px;
-    text-align:center; margin:0 0 6px; color:#2A241C;
+    margin:0; color:#2A241C; text-align:center;
   }
   .tagline{
     font-family:'Shadows Into Light'; font-size:16px; text-align:center; opacity:0.75; margin:0 0 40px;
@@ -83,6 +84,11 @@
     font-family:'Shadows Into Light'; font-size:26px; margin-top:2px; color:var(--accent1);
   }
 
+  .welcome-back p{
+    font-family:'Playfair Display'; font-size:19px; font-style:italic; line-height:1.7; margin:0 0 26px; text-align:center;
+  }
+  .welcome-back-actions{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
   .cta-wrap{ display:flex; justify-content:center; margin-top:44px; }
   .cta{
     font-family:'Inter'; font-weight:700; font-size:15px; letter-spacing:0.02em;
@@ -92,6 +98,9 @@
   }
   .cta:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--shadow); }
   .cta:active{ transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--shadow); }
+  .cta.secondary{ background:transparent; color:var(--accent1); border:1.5px solid var(--accent1); }
+
+  .loading-note{ text-align:center; font-size:13px; opacity:0.5; margin-top:30px; }
 </style>
 </head>
 <body>
@@ -99,7 +108,7 @@
 <div id="starfall"></div>
 
 <main>
-  <div class="logo-wrap">
+  <div class="brand-row">
     <svg viewBox="0 0 60 60">
       <circle cx="30" cy="30" r="28" fill="#FBFCFE" stroke="#1B2A3D33" stroke-width="2"/>
       <g transform="rotate(-8 30 30)">
@@ -110,44 +119,83 @@
         <path d="M30 28.3 L31.1 30.4 L33.4 30.4 L31.6 31.9 L32.3 34.1 L30 32.7 L27.7 34.1 L28.4 31.9 L26.6 30.4 L28.9 30.4 Z" fill="#FBFCFE" stroke="#2A241C" stroke-width="0.8"/>
       </g>
     </svg>
+    <h1 class="wordmark">the paper hours</h1>
   </div>
-  <h1 class="wordmark">the paper hours</h1>
-  <p class="tagline">a letter before you go in</p>
+  <p class="tagline" id="tagline">a letter before you go in</p>
 
-  <div class="letter">
-    <div class="tape"></div>
-    <p class="first-line">Hi, I'm Kamalee. I built this for you.</p>
-
-    <p>I want to tell you why, but slowly, if that's alright.</p>
-
-    <p>There was a stretch of time that was harder than most. I don't need to explain all of it here. What I remember most is wanting somewhere quiet to put things down. Nowhere to win, nowhere to fail, nowhere that asked anything of me. Just somewhere soft.</p>
-
-    <p>So I started building one.</p>
-
-    <p>It took longer than I expected, and it changed more than I expected too. There were things I built with a lot of care that just didn't end up being right, and I had to let them go, even after all that work. That part was harder than the building itself. But I think it's part of what this whole thing became about, in the end. That it's alright to undo something, even something you tried hard at, if it isn't quite what you meant.</p>
-
-    <p>What's left, after all of that, is what you're about to see. A place to let go of what's weighing on you. A place to say the thing you never got to say to someone. A small hope, folded into something. A tiny win, allowed to be small. A message you seal up for a version of yourself that hasn't arrived yet.</p>
-
-    <p>There were good moments too, quiet ones. A thing finally working the way I'd pictured it. That kind of small win, the same kind this whole site is built to hold.</p>
-
-    <p>I hope it's useful to you the way I needed it to be useful to me. Fold something in. Let something go. Come back to it whenever you need to.</p>
-
-    <p class="signoff">Yours, folded and refolded,</p>
-    <p class="signoff-name">Kamalee &#10084;&#65039;</p>
-  </div>
-
-<div class="cta-wrap">
-    <a class="cta" href="/app">ready to see the paper hours →</a>
+  <div id="content">
+    <p class="loading-note">just a moment...</p>
   </div>
 </main>
 
 <script>
-(function(){
+  const SUPABASE_URL = 'https://gbkgsrducevspsjzxmkv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdia2dzcmR1Y2V2c3Bzanp4bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNjUxNjMsImV4cCI6MjA5OTk0MTE2M30.ugtO1CxT3ycbZJ-AhtWbARLZTT2g1-3wrcmFPuLHi0s';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const LETTER_HTML = `
+    <div class="letter">
+      <div class="tape"></div>
+      <p class="first-line">Hi, I'm Kamalee. I built this for you.</p>
+      <p>I want to tell you why, but slowly, if that's alright.</p>
+      <p>There was a stretch of time that was harder than most. I don't need to explain all of it here. What I remember most is wanting somewhere quiet to put things down. Nowhere to win, nowhere to fail, nowhere that asked anything of me. Just somewhere soft.</p>
+      <p>So I started building one.</p>
+      <p>It took longer than I expected, and it changed more than I expected too. There were things I built with a lot of care that just didn't end up being right, and I had to let them go, even after all that work. That part was harder than the building itself. But I think it's part of what this whole thing became about, in the end. That it's alright to undo something, even something you tried hard at, if it isn't quite what you meant.</p>
+      <p>What's left, after all of that, is what you're about to see. A place to let go of what's weighing on you. A place to say the thing you never got to say to someone. A small hope, folded into something. A tiny win, allowed to be small. A message you seal up for a version of yourself that hasn't arrived yet.</p>
+      <p>There were good moments too, quiet ones. A thing finally working the way I'd pictured it. That kind of small win, the same kind this whole site is built to hold.</p>
+      <p>I hope it's useful to you the way I needed it to be useful to me. Fold something in. Let something go. Come back to it whenever you need to.</p>
+      <p class="signoff">Yours, folded and refolded,</p>
+      <p class="signoff-name">Kamalee &#10084;&#65039;</p>
+    </div>
+    <div class="cta-wrap">
+      <a class="cta" href="/auth">ready to see the paper hours →</a>
+    </div>
+  `;
+
+  function welcomeBackHTML(days){
+    const dayWord = days === 1 ? '1 day' : days + ' days';
+    return `
+      <div class="letter welcome-back">
+        <div class="tape"></div>
+        <p>It's been ${dayWord} since we last saw you. Nothing here has changed. That's alright.</p>
+      </div>
+      <div class="cta-wrap welcome-back-actions">
+        <a class="cta" href="/auth?mode=login">log back in →</a>
+        <a class="cta secondary" href="/auth?mode=signup">start fresh →</a>
+      </div>
+    `;
+  }
+
+  (async function(){
+    const contentEl = document.getElementById('content');
+    const hasAccount = localStorage.getItem('ph_has_account') === '1';
+    const lastActive = parseInt(localStorage.getItem('ph_last_active') || '0', 10);
+    const daysSince = lastActive ? Math.floor((Date.now() - lastActive) / 86400000) : Infinity;
+
+    let session = null;
+    try{
+      const { data } = await sb.auth.getSession();
+      session = data.session;
+    }catch(e){ /* network hiccup, fall through to letter */ }
+
+    if(session && daysSince < 30){
+      window.location.href = '/app';
+      return;
+    }
+
+    if(hasAccount && daysSince >= 30){
+      contentEl.innerHTML = welcomeBackHTML(daysSince);
+      return;
+    }
+
+    contentEl.innerHTML = LETTER_HTML;
+  })();
+
   function rand(a,b){ return Math.random()*(b-a)+a; }
   function starGlyphSVG(color){
     return `<svg viewBox="0 0 100 100"><path d="M50 6 L61 39 L96 39 L67 59 L78 92 L50 71 L22 92 L33 59 L4 39 L39 39 Z" fill="${color}" stroke="rgba(15,10,8,0.85)" stroke-width="2.8" stroke-linejoin="round"/></svg>`;
   }
-  const colors = ['#4A6FA5','#7C93AC','#A8C4E0','#5A5347'];
+  const starColors = ['#4A6FA5','#7C93AC','#A8C4E0','#5A5347'];
   const layer = document.getElementById('starfall');
   const count = 26;
   for(let i=0;i<count;i++){
@@ -159,10 +207,9 @@
     el.style.left=left+'%'; el.style.width=size+'px'; el.style.height=size+'px';
     el.style.animationDuration=dur+'s'; el.style.animationDelay=delay+'s';
     el.style.setProperty('--drift', drift+'px'); el.style.setProperty('--op', op);
-    el.innerHTML = starGlyphSVG(colors[i%colors.length]);
+    el.innerHTML = starGlyphSVG(starColors[i%starColors.length]);
     layer.appendChild(el);
   }
-})();
 </script>
 
 </body>

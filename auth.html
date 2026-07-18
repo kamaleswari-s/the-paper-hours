@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sign in — the paper hours</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='28' fill='%23FBFCFE' stroke='%231B2A3D' stroke-width='2'/%3E%3Cg transform='rotate(-8 30 30)'%3E%3Cline x1='16' y1='14' x2='44' y2='14' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cline x1='16' y1='46' x2='44' y2='46' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M18 14 L42 14 L30 30 Z' fill='%234A6FA5' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M18 46 L42 46 L30 30 Z' fill='%237C93AC' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M30 28.3 L31.1 30.4 L33.4 30.4 L31.6 31.9 L32.3 34.1 L30 32.7 L27.7 34.1 L28.4 31.9 L26.6 30.4 L28.9 30.4 Z' fill='%23FBFCFE' stroke='%232A241C' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Shadows+Into+Light&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{
+    --bg:#E2E8F0; --ink:#1B2A3D; --ink-soft:rgba(27,42,61,0.65);
+    --card:#FBFCFE; --card-border:rgba(27,42,61,0.28);
+    --accent1:#4A6FA5; --shadow:rgba(27,42,61,0.32);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; min-height:100%; }
+  body{
+    background: var(--bg); color: var(--ink); font-family:'Inter', sans-serif;
+    display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px;
+  }
+  .card{
+    background: var(--card); border:1.5px solid var(--card-border); border-radius:14px;
+    padding:40px 36px; box-shadow: 8px 8px 0 var(--shadow); max-width:420px; width:100%; position:relative;
+  }
+  .tape{
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-2deg);
+    width:74px; height:20px; background:#5A5347; opacity:0.9; border-radius:2px;
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.18);
+  }
+  h1{ font-family:'Playfair Display'; font-style:italic; font-weight:600; font-size:24px; margin:0 0 6px; text-align:center; }
+  p.sub{ font-family:'Shadows Into Light'; font-size:15px; text-align:center; opacity:0.75; margin:0 0 28px; }
+  label{ font-size:12px; font-weight:600; opacity:0.7; display:block; margin-bottom:6px; }
+  input[type="email"]{
+    width:100%; padding:13px 14px; font-size:15px; font-family:'Inter';
+    border:1.5px solid var(--card-border); border-radius:8px; background:var(--bg); color:var(--ink);
+    margin-bottom:16px;
+  }
+  button{
+    width:100%; font-family:'Inter'; font-weight:700; font-size:14.5px;
+    background: var(--accent1); color: var(--card); border:none; padding:13px; border-radius:8px;
+    cursor:pointer; box-shadow: 3px 3px 0 var(--shadow); transition: transform .12s ease;
+  }
+  button:hover{ transform: translate(-2px,-2px); }
+  button:disabled{ opacity:0.5; cursor:default; transform:none; }
+  .msg{ font-size:13px; text-align:center; margin-top:16px; line-height:1.5; }
+  .msg.error{ color:#A8283F; }
+  .back{ display:block; text-align:center; margin-top:20px; font-size:13px; color:var(--ink); opacity:0.6; text-decoration:none; }
+  .back:hover{ opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="tape"></div>
+  <h1 id="heading">come in</h1>
+  <p class="sub" id="subtext">enter your email, we'll send you a link, no password to remember</p>
+
+  <form id="authForm">
+    <label for="email">your email</label>
+    <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+    <button type="submit" id="sendBtn">send my link →</button>
+  </form>
+  <p class="msg" id="msg"></p>
+
+  <a class="back" href="/">← back to the letter</a>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://gbkgsrducevspsjzxmkv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdia2dzcmR1Y2V2c3Bzanp4bWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNjUxNjMsImV4cCI6MjA5OTk0MTE2M30.ugtO1CxT3ycbZJ-AhtWbARLZTT2g1-3wrcmFPuLHi0s';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  if(mode === 'login'){
+    document.getElementById('heading').textContent = 'welcome back';
+    document.getElementById('subtext').textContent = 'enter the email your account is under, we\'ll send a link';
+  } else if(mode === 'signup'){
+    document.getElementById('heading').textContent = 'start fresh';
+    document.getElementById('subtext').textContent = 'enter an email, we\'ll set up your new account';
+  }
+
+  const form = document.getElementById('authForm');
+  const emailInput = document.getElementById('email');
+  const sendBtn = document.getElementById('sendBtn');
+  const msg = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    if(!email) return;
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'sending...';
+    msg.className = 'msg';
+    msg.textContent = '';
+
+    const redirectTo = window.location.origin + '/app';
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo }
+    });
+
+    if(error){
+      msg.className = 'msg error';
+      msg.textContent = "that didn't go through: " + error.message;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'send my link →';
+      return;
+    }
+
+    form.style.display = 'none';
+    msg.className = 'msg';
+    msg.textContent = 'check ' + email + ' for a link. tap it and you\'ll land right back here, signed in.';
+  });
+</script>
+
+</body>
+</html>
