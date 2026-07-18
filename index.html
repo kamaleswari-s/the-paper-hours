@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>the paper hours</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='28' fill='%23FBFCFE' stroke='%231B2A3D' stroke-width='2'/%3E%3Cg transform='rotate(-8 30 30)'%3E%3Cline x1='16' y1='14' x2='44' y2='14' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cline x1='16' y1='46' x2='44' y2='46' stroke='%232A241C' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M18 14 L42 14 L30 30 Z' fill='%234A6FA5' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M18 46 L42 46 L30 30 Z' fill='%237C93AC' stroke='%232A241C' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M30 28.3 L31.1 30.4 L33.4 30.4 L31.6 31.9 L32.3 34.1 L30 32.7 L27.7 34.1 L28.4 31.9 L26.6 30.4 L28.9 30.4 Z' fill='%23FBFCFE' stroke='%232A241C' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Shadows+Into+Light&family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E2E8F0; --ink:#1B2A3D; --ink-soft:rgba(27,42,61,0.65);
+    --card:#FBFCFE; --card-border:rgba(27,42,61,0.28);
+    --accent1:#4A6FA5; --accent2:#7C93AC; --accent3:#A8C4E0; --accent4:#5A5347;
+    --shadow:rgba(27,42,61,0.32);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; min-height:100%; }
+  body{
+    background: var(--bg); color: var(--ink); font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+
+  #starfall{ position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .fstar{ position:absolute; top:-8%; opacity:0; animation-name: fall; animation-timing-function:linear; animation-iteration-count:infinite; }
+  @keyframes fall{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    6%{ opacity: var(--op,0.8); }
+    50%{ transform:translateY(55vh) translateX(var(--drift,20px)) rotate(160deg); }
+    94%{ opacity: var(--op,0.8); }
+    100%{ transform:translateY(112vh) translateX(0) rotate(320deg); opacity:0; }
+  }
+
+  main{ position:relative; z-index:5; max-width:640px; margin:0 auto; padding:60px 24px 90px; }
+  html, body{ cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M13 2 L15.8 9.8 L24 9.8 L17.3 14.6 L19.8 22.4 L13 17.4 L6.2 22.4 L8.7 14.6 L2 9.8 L10.2 9.8 Z' fill='%234A6FA5' stroke='%232A241C' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 13 13, auto; }
+
+  @media (max-width: 640px){
+    main{ padding:36px 18px 60px; }
+    .logo-wrap svg{ width:52px; height:52px; }
+    .wordmark{ font-size:21px; }
+    .tagline{ font-size:14px; margin-bottom:28px; }
+    .letter{ padding:26px 20px; }
+    .letter p{ font-size:15.5px; line-height:1.75; }
+    .letter p.first-line{ font-size:17px; }
+    .signoff, .signoff-name{ font-size:19px; }
+    .cta{ padding:14px 20px; font-size:14px; width:100%; text-align:center; }
+  }
+
+  .logo-wrap{ display:flex; justify-content:center; margin-bottom:18px; }
+  .logo-wrap svg{ width:64px; height:64px; }
+
+  .wordmark{
+    font-family:'Playfair Display'; font-style:italic; font-weight:600; font-size:26px;
+    text-align:center; margin:0 0 6px; color:#2A241C;
+  }
+  .tagline{
+    font-family:'Shadows Into Light'; font-size:16px; text-align:center; opacity:0.75; margin:0 0 40px;
+  }
+
+  .letter{
+    background: var(--card); border:1.5px solid var(--card-border); border-radius:14px;
+    padding:44px 40px; box-shadow: 8px 8px 0 var(--shadow); position:relative;
+  }
+  .tape{
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-2deg);
+    width:80px; height:22px; background: var(--accent4); opacity:0.9; border-radius:2px;
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.18);
+  }
+  .letter p{
+    font-family:'Playfair Display'; font-size:17px; line-height:1.85; margin:0 0 20px; color:var(--ink);
+  }
+  .letter p.first-line{ font-style:italic; font-size:19px; }
+  .signoff{
+    font-family:'Shadows Into Light'; font-size:22px; margin-top:6px; color:var(--accent1);
+  }
+  .signoff-name{
+    font-family:'Shadows Into Light'; font-size:26px; margin-top:2px; color:var(--accent1);
+  }
+
+  .cta-wrap{ display:flex; justify-content:center; margin-top:44px; }
+  .cta{
+    font-family:'Inter'; font-weight:700; font-size:15px; letter-spacing:0.02em;
+    background: var(--accent1); color: var(--card); border:none; padding:15px 28px; border-radius:10px;
+    cursor:pointer; box-shadow: 4px 4px 0 var(--shadow); transition: transform .12s ease, box-shadow .12s ease;
+    text-decoration:none; display:inline-block;
+  }
+  .cta:hover{ transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--shadow); }
+  .cta:active{ transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--shadow); }
+</style>
+</head>
+<body>
+
+<div id="starfall"></div>
+
+<main>
+  <div class="logo-wrap">
+    <svg viewBox="0 0 60 60">
+      <circle cx="30" cy="30" r="28" fill="#FBFCFE" stroke="#1B2A3D33" stroke-width="2"/>
+      <g transform="rotate(-8 30 30)">
+        <line x1="16" y1="14" x2="44" y2="14" stroke="#2A241C" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="16" y1="46" x2="44" y2="46" stroke="#2A241C" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M18 14 L42 14 L30 30 Z" fill="#4A6FA5" stroke="#2A241C" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M18 46 L42 46 L30 30 Z" fill="#7C93AC" stroke="#2A241C" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M30 28.3 L31.1 30.4 L33.4 30.4 L31.6 31.9 L32.3 34.1 L30 32.7 L27.7 34.1 L28.4 31.9 L26.6 30.4 L28.9 30.4 Z" fill="#FBFCFE" stroke="#2A241C" stroke-width="0.8"/>
+      </g>
+    </svg>
+  </div>
+  <h1 class="wordmark">the paper hours</h1>
+  <p class="tagline">a letter before you go in</p>
+
+  <div class="letter">
+    <div class="tape"></div>
+    <p class="first-line">Hi, I'm Kamalee. I built this for you.</p>
+
+    <p>I want to tell you why, but slowly, if that's alright.</p>
+
+    <p>There was a stretch of time that was harder than most. I don't need to explain all of it here. What I remember most is wanting somewhere quiet to put things down. Nowhere to win, nowhere to fail, nowhere that asked anything of me. Just somewhere soft.</p>
+
+    <p>So I started building one.</p>
+
+    <p>It took longer than I expected, and it changed more than I expected too. There were things I built with a lot of care that just didn't end up being right, and I had to let them go, even after all that work. That part was harder than the building itself. But I think it's part of what this whole thing became about, in the end. That it's alright to undo something, even something you tried hard at, if it isn't quite what you meant.</p>
+
+    <p>What's left, after all of that, is what you're about to see. A place to let go of what's weighing on you. A place to say the thing you never got to say to someone. A small hope, folded into something. A tiny win, allowed to be small. A message you seal up for a version of yourself that hasn't arrived yet.</p>
+
+    <p>There were good moments too, quiet ones. A thing finally working the way I'd pictured it. That kind of small win, the same kind this whole site is built to hold.</p>
+
+    <p>I hope it's useful to you the way I needed it to be useful to me. Fold something in. Let something go. Come back to it whenever you need to.</p>
+
+    <p class="signoff">Yours, folded and refolded,</p>
+    <p class="signoff-name">Kamalee &#10084;&#65039;</p>
+  </div>
+
+<div class="cta-wrap">
+    <a class="cta" href="app.html">ready to see the paper hours →</a>
+  </div>
+</main>
+
+<script>
+(function(){
+  function rand(a,b){ return Math.random()*(b-a)+a; }
+  function starGlyphSVG(color){
+    return `<svg viewBox="0 0 100 100"><path d="M50 6 L61 39 L96 39 L67 59 L78 92 L50 71 L22 92 L33 59 L4 39 L39 39 Z" fill="${color}" stroke="rgba(15,10,8,0.85)" stroke-width="2.8" stroke-linejoin="round"/></svg>`;
+  }
+  const colors = ['#4A6FA5','#7C93AC','#A8C4E0','#5A5347'];
+  const layer = document.getElementById('starfall');
+  const count = 26;
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div'); el.className='fstar';
+    const size=rand(10,22);
+    const col = (i / count) * 100;
+    const left = Math.max(0, Math.min(96, col + rand(-3.5,3.5)));
+    const dur=rand(20,40), delay=-rand(0,dur), drift=rand(-45,45), op=rand(0.45,0.85);
+    el.style.left=left+'%'; el.style.width=size+'px'; el.style.height=size+'px';
+    el.style.animationDuration=dur+'s'; el.style.animationDelay=delay+'s';
+    el.style.setProperty('--drift', drift+'px'); el.style.setProperty('--op', op);
+    el.innerHTML = starGlyphSVG(colors[i%colors.length]);
+    layer.appendChild(el);
+  }
+})();
+</script>
+
+</body>
+</html>
